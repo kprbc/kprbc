@@ -3,7 +3,7 @@
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2
 jobs:
-  build:
+  test-backend:
     docker:
       # specify the version
       - image: circleci/golang:1.11-stretch
@@ -15,5 +15,27 @@ jobs:
     steps:
       - checkout
       # specify any bash command here prefixed with `run: `
-      - run: cd backend && dep ensure
-      - run: go test -v ./...
+      - run:
+          command: dep ensure
+          working_directory: /go/src/github.com/kprbc/kprbc/backend
+      - run:
+          command: go test -v ./...
+          working_directory: /go/src/github.com/kprbc/kprbc/backend
+  test-frontend:
+    docker:
+      - image: circleci/node:10-stretch-browsers
+    working_directory: ~/kprbc
+    steps:
+      - checkout
+      - run:
+          command: npm install
+          working_directory: ~/kprbc/frontend
+      - run:
+          command: npm test -- --watch=false
+          working_directory: ~/kprbc/frontend
+workflows:
+  version: 2
+  tests:
+    jobs:
+      - test-backend
+      - test-frontend
