@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kprbc/kprbc/backend/router"
+	"github.com/kprbc/kprbc/router"
 )
 
 func main() {
