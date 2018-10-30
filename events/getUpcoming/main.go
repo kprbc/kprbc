@@ -8,7 +8,7 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/kprbc/kprbc/events/handlers"
+	"github.com/kprbc/kprbc/google"
 )
 
 // Response is of type APIGatewayProxyResponse since we're leveraging the
@@ -21,7 +21,11 @@ type Response events.APIGatewayProxyResponse
 func Handler(ctx context.Context) (Response, error) {
 	var buf bytes.Buffer
 
-	fmt.Println(handlers.GetUpcomingEvents())
+	events, err := google.ListUpcomingEvents("primary", 10)
+	if err != nil {
+		return Response{StatusCode: 500}, err
+	}
+	fmt.Println(events)
 
 	body, err := json.Marshal(map[string]interface{}{
 		"message": "Go Serverless v1.0! Your function executed successfully!",
